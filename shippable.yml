@@ -26,6 +26,7 @@ jobs:
               imageName: "microsoft/windowsservercore"
               imageTag: "10.0.14393.1884"
           script:
-            - cd %NDWREPO_PATH%
+            - pwd
+            - dir -r
             - docker build -t mynodeapp:latest .
             - docker run -p 9080:8080 mynodeapp:latest
