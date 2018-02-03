@@ -26,9 +26,10 @@ jobs:
               imageName: "microsoft/windowsservercore"
               imageTag: "10.0.14393.1884"
           script:
+            - echo $NDWREPO_PATH
+            - echo %NDWREPO_PATH%
             - pushd IN\ndwrepo\gitRepo
             - dir
             - docker build -t mynodeapp:latest .
             - docker run -p 9080:8080 mynodeapp:latest
             - popd
-            
