@@ -22,6 +22,7 @@ jobs:
       - TASK:
           name: build_image
           runtime:
+            container: false
             options:
               imageName: "microsoft/windowsservercore"
               imageTag: "10.0.14393.1884"
