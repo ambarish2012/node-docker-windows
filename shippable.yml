@@ -27,7 +27,7 @@ jobs:
               imageName: "microsoft/windowsservercore"
               imageTag: "10.0.14393.1884"
           script:
-            - pushd $env:NDWREPO_PATH
+            - pushd $env:NDWREPO_STATE
             - dir
             - docker build -t mynodeapp:latest .
             - docker run -p 9080:8080 mynodeapp:latest
