@@ -1,6 +1,6 @@
 resources:
 
-  - name: nodeRepo
+  - name: ndwrepo
     type: gitRepo
     # replace dr_github with your GitHub integration name
     integration: github
@@ -12,13 +12,13 @@ resources:
 
 jobs:
 
-  - name: container_single_task
+  - name: build_node_image
     type: runSh
     runtime:
       nodePool: custom__x86_64__WindowsServer_2016
       container: true
     steps:
-      - IN: nodeRepo
+      - IN: ndwrepo
       - TASK:
           name: build_image
           runtime:
@@ -26,6 +26,6 @@ jobs:
               imageName: "microsoft/windowsservercore"
               imageTag: "10.0.14393.1884"
           script:
-            - cd %NODEREPO_PATH%
+            - cd %NDWREPO_PATH%
             - docker build -t mynodeapp:latest .
             - docker run -p 9080:8080 mynodeapp:latest
