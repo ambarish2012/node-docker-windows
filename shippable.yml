@@ -1,51 +1,31 @@
-# Language setting http://docs.shippable.com/ci/languages/node/
-language: node_js
+resources:
 
-# use this to control what branches get built.
-# http://docs.shippable.com/ci/advancedOptions/branches/
-branches:
-  only:
-    - master
+  - name: nodeRepo
+    type: gitRepo
+    # replace dr_github with your GitHub integration name
+    integration: github
+    pointer:
+      # replace with source code location (e.g. GitHub) where you cloned this
+      # sample project.
+      sourceName: ambarish2012/node-docker-windows
+      branch: master
 
-# using pre-defined build variables
-# full list http://docs.shippable.com/ci/advancedOptions/environmentVariables/
-env:
-  global:
-    - TEST_RESULTS_DIR=$SHIPPABLE_REPO_DIR/shippable/testresults
-    - CODE_COVERAGE_DIR=$SHIPPABLE_REPO_DIR/shippable/codecoverage
-    - TESTS_LOC_DIR=$SHIPPABLE_REPO_DIR/tests
-    - MOD_LOC=$SHIPPABLE_REPO_DIR/node_modules/.bin/
-    - DOCKER_REPO=ci-push-docker-hub
-    - DOCKER_ACC=devopsrecipes # {account name}
+jobs:
 
-build:
-
-  # http://docs.shippable.com/ci/shippableyml/#ci
-  ci:
-    # npm mirrors can sometimes be flacky, better to use shippable_retry
-    # http://docs.shippable.com/ci/advancedOptions/retry/
-    - shippable_retry npm install
-    - mkdir -p $TEST_RESULTS_DIR && mkdir -p $CODE_COVERAGE_DIR
-    - pushd $TESTS_LOC_DIR
-    - $MOD_LOC/mocha --recursive "$TESTS_LOC_DIR/**/*.spec.js" -R mocha-junit-reporter --reporter-options mochaFile=$TEST_RESULTS_DIR/testresults.xml
-    - $MOD_LOC/istanbul --include-all-sources cover -root "$SHIPPABLE_REPO_DIR/routes" $SHIPPABLE_REPO_DIR/node_modules/mocha/bin/_mocha -- -R spec-xunit-file --recursive "$TESTS_LOC_DIR/**/*.spec.js"
-    - $MOD_LOC/istanbul report cobertura --dir $CODE_COVERAGE_DIR
-    - popd
-
-  # http://docs.shippable.com/ci/shippableyml/#post_ci
-  post_ci:
-    - docker build -t $DOCKER_ACC/$DOCKER_REPO:$BRANCH.$BUILD_NUMBER .
-    - docker push $DOCKER_ACC/$DOCKER_REPO:$BRANCH.$BUILD_NUMBER
-    
-  #this will be ignored if you are not using Assembly Lines to trigger another job after ci  
-  on_success:
-    - echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/demo_doc_img.env
-
-# Integrations are used to connect external resources to CI
-# http://docs.shippable.com/integrations/overview/
-integrations:
-  # adding docker hub integration so that credentials are available to CI Job
-  # http://docs.shippable.com/platform/integration/dockerRegistryLogin/
-  hub:
-    - integrationName: dr-dockerhub
-      type: dockerRegistryLogin
+  - name: container_single_task
+    type: runSh
+    runtime:
+      nodePool: custom__x86_64__WindowsServer_2016
+      container: true
+    steps:
+      - IN: nodeRepo
+      - TASK:
+          name: build_image
+          runtime:
+            options:
+              imageName: "microsoft/windowsservercore"
+              imageTag: "10.0.14393.1884"
+          script:
+            - cd %NODEREPO_PATH%
+            - docker build -t mynodeapp:latest .
+            - docker run -p 9080:8080 mynodeapp:latest
