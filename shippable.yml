@@ -16,7 +16,7 @@ jobs:
     type: runSh
     runtime:
       nodePool: custom__x86_64__WindowsServer_2016
-      container: true
+      container: false
     steps:
       - IN: ndwrepo
       - TASK:
@@ -26,9 +26,7 @@ jobs:
               imageName: "microsoft/windowsservercore"
               imageTag: "10.0.14393.1884"
           script:
-            - echo $NDWREPO_PATH
-            - echo %NDWREPO_PATH%
-            - pushd IN\ndwrepo\gitRepo
+            - pushd $env:NDWREPO_PATH
             - dir
             - docker build -t mynodeapp:latest .
             - docker run -p 9080:8080 mynodeapp:latest
