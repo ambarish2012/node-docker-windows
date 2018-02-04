@@ -27,10 +27,10 @@ jobs:
               imageName: "microsoft/windowsservercore"
               imageTag: "10.0.14393.1884"
           script:
-            - "$ErrorActionPreference='SilentlyContinue'"
             - pushd $env:NDWREPO_STATE
+            - docker build -t mynodeapp:latest .
+            - docker run -p -d 9080:8080 mynodeapp:latest
+            - sleep 5
             - docker stop mynodeapp
             - docker rm mynodeapp
-            - docker build -t mynodeapp:latest .
-            - docker run -p 9080:8080 mynodeapp:latest
             - popd
