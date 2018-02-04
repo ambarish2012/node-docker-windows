@@ -29,8 +29,9 @@ jobs:
           script:
             - pushd $env:NDWREPO_STATE
             - docker build -t mynodeapp:latest .
-            - docker run -d -p 9080:8080 mynodeapp:latest
+            - docker run -d -p 9080:8080 --name mynodeapp mynodeapp:latest
             - sleep 5
+            - curl 172.31.83.97:9080
             - docker stop mynodeapp
             - docker rm mynodeapp
             - popd
