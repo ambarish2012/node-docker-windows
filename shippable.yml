@@ -27,6 +27,7 @@ jobs:
               imageName: "microsoft/windowsservercore"
               imageTag: "10.0.14393.1884"
           script:
+            - $ErrorActionPreference='SilentlyContinue'
             - pushd $env:NDWREPO_STATE
             - docker stop mynodeapp
             - docker rm mynodeapp
