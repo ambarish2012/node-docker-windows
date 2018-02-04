@@ -28,7 +28,8 @@ jobs:
               imageTag: "10.0.14393.1884"
           script:
             - pushd $env:NDWREPO_STATE
-            - dir
+            - docker stop mynodeapp
+            - docker rm mynodeapp
             - docker build -t mynodeapp:latest .
             - docker run -p 9080:8080 mynodeapp:latest
             - popd
