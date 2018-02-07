@@ -16,16 +16,12 @@ jobs:
     type: runSh
     runtime:
       nodePool: custom__x86_64__WindowsServer_2016
-      container: false
     steps:
       - IN: ndwrepo
       - TASK:
           name: build_image
           runtime:
             container: false
-            options:
-              imageName: "microsoft/windowsservercore"
-              imageTag: "10.0.14393.1884"
           script:
             - pushd $env:NDWREPO_STATE
             - docker build -t mynodeapp:latest .
