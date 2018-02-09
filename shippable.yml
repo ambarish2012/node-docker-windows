@@ -27,7 +27,7 @@ jobs:
             - docker build -t mynodeapp:latest .
             - docker run -d -p 9080:8080 --name mynodeapp mynodeapp:latest
             - sleep 5
-            - curl 172.31.83.97:9080
+            - curl 172.31.84.89:9080
             - docker stop mynodeapp
             - docker rm mynodeapp
             - popd
